@@ -26,13 +26,22 @@ def fetch_user(screen_name=None):
     tweets = twitter_api.user_timeline(screen_name, tweet_mode="extended", count=150)
     print("TWEETS COUNT:", len(statuses))
 
-    for status in tweets:
+
+    all_tweets = [status.full_text for status in tweets]
+    embeddingS = list(basilica_api_client.embed_sentences(all_tweet_texts, model="twitter"))
+    print("NUMBER OF EMBEDDINGS", LEN(embedding))
+
+
+    for index, status in enumerate(tweets):
+        print(index)
         print(status.full_text)
         print("____")
 
+        embedding = embeddingS[index]
+
         embedding = basilica_api_client.embed_sentence(status, full_text, model="twitter")
         print(len(embedding))
-        
+
         db_tweet = Tweet.query.get(status.id) or Tweet(id=status.id)
         db_tweet.user_id = status.author.id 
         db_tweet.full_text = status.full_text
